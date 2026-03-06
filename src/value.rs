@@ -1,6 +1,9 @@
 use crate::sea_query::{Nullable, ValueType};
 use crate::{ActiveValue, Value};
 
+mod url;
+pub use url::*;
+
 mod timestamp;
 use timestamp::*;
 

@@ -201,6 +201,7 @@ with-json = [
     "time?/serde",
     "pgvector?/serde",
     "sea-query-sqlx?/with-json",
+    "url/serde",
 ]
 with-rust_decimal = [
     "rust_decimal",
