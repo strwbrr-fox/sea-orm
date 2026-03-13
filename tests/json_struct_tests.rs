@@ -2,6 +2,8 @@
 
 pub mod common;
 
+use std::collections::{BTreeMap, HashMap};
+
 pub use common::{TestContext, features::*, setup::*};
 use pretty_assertions::assert_eq;
 use sea_orm::{DatabaseConnection, DbBackend, ExprTrait, entity::prelude::*, entity::*};
@@ -45,10 +47,10 @@ async fn json_struct_tests() -> Result<(), DbErr> {
 #[should_panic(
     expected = "Failed to serialize 'NonSerializableStruct': Error(\"intentionally failing serialization\", line: 0, column: 0)"
 )]
-async fn panic_on_non_serializable_insert() {
+async fn panic_on_non_serializable_insert_1() {
     use json_struct::*;
 
-    let ctx = TestContext::new("json_struct_non_serializable_test").await;
+    let ctx = TestContext::new("json_struct_non_serializable_test_1").await;
 
     let model = Model {
         id: 1,
@@ -70,7 +72,52 @@ async fn panic_on_non_serializable_insert() {
             price: 12.01,
             notes: Some("hand picked, organic".into()),
         }),
+        json_objects: Objects {
+            btree: BTreeMap::from_iter([("apple".into(), 1)]),
+            hash: HashMap::from_iter([("apple".into(), 1)]),
+        },
+        json_object: Some(BTreeMap::from_iter([("hello".into(), "world".into())])),
         json_non_serializable: Some(NonSerializableStruct),
+        json_object_non_stringly_key: None,
+    };
+
+    let _ = model.into_active_model().insert(&ctx.db).await;
+}
+
+#[sea_orm_macros::test]
+#[should_panic]
+async fn panic_on_non_serializable_insert_2() {
+    use json_struct::*;
+
+    let ctx = TestContext::new("json_struct_non_serializable_test_2").await;
+
+    let model = Model {
+        id: 1,
+        json: json!({
+            "id": 1,
+            "name": "apple",
+            "price": 12.01,
+            "notes": "hand picked, organic",
+        }),
+        json_value: KeyValue {
+            id: 1,
+            name: "apple".into(),
+            price: 12.01,
+            notes: Some("hand picked, organic".into()),
+        },
+        json_value_opt: Some(KeyValue {
+            id: 1,
+            name: "apple".into(),
+            price: 12.01,
+            notes: Some("hand picked, organic".into()),
+        }),
+        json_objects: Objects {
+            btree: BTreeMap::from_iter([("apple".into(), 1)]),
+            hash: HashMap::from_iter([("apple".into(), 1)]),
+        },
+        json_object: Some(BTreeMap::from_iter([("hello".into(), "world".into())])),
+        json_object_non_stringly_key: Some(BTreeMap::from_iter([(vec![1, 2, 3], ())])),
+        json_non_serializable: None,
     };
 
     let _ = model.into_active_model().insert(&ctx.db).await;
@@ -99,6 +146,12 @@ pub async fn insert_json_struct_1(db: &DatabaseConnection) -> Result<(), DbErr> 
             price: 12.01,
             notes: Some("hand picked, organic".into()),
         }),
+        json_objects: Objects {
+            btree: BTreeMap::from_iter([("apple".into(), 1)]),
+            hash: HashMap::from_iter([("apple".into(), 1)]),
+        },
+        json_object: Some(BTreeMap::from_iter([("hello".into(), "world".into())])),
+        json_object_non_stringly_key: None,
         json_non_serializable: None,
     };
 
@@ -135,6 +188,12 @@ pub async fn insert_json_struct_2(db: &DatabaseConnection) -> Result<(), DbErr> 
             notes: None,
         },
         json_value_opt: None,
+        json_objects: Objects {
+            btree: BTreeMap::from_iter([("apple".into(), 0), ("orange".into(), 2)]),
+            hash: HashMap::from_iter([("apple".into(), 0), ("orange".into(), 2)]),
+        },
+        json_object: Some(BTreeMap::from_iter([("hello".into(), "world".into())])),
+        json_object_non_stringly_key: None,
         json_non_serializable: None,
     };
 

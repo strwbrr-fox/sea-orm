@@ -3,6 +3,7 @@ firedbg
 Cargo.lock
 *.sublime*
 .vscode
+.zed
 .idea/*
 */.idea/*
 .env.local

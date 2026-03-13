@@ -1,3 +1,5 @@
+use std::collections::{BTreeMap, HashMap};
+
 use sea_orm::FromJsonQueryResult;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize, Serializer};
@@ -10,6 +12,9 @@ pub struct Model {
     pub json: Json,
     pub json_value: KeyValue,
     pub json_value_opt: Option<KeyValue>,
+    pub json_objects: Objects,
+    pub json_object: Option<BTreeMap<String, String>>,
+    pub json_object_non_stringly_key: Option<BTreeMap<Vec<i32>, ()>>,
     pub json_non_serializable: Option<NonSerializableStruct>,
 }
 
@@ -19,6 +24,12 @@ pub struct KeyValue {
     pub name: String,
     pub price: f32,
     pub notes: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+pub struct Objects {
+    pub btree: BTreeMap<String, i32>,
+    pub hash: HashMap<String, i32>,
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, FromJsonQueryResult)]

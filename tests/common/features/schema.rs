@@ -394,6 +394,13 @@ pub async fn create_json_struct_table(db: &DbConn) -> Result<ExecResult, DbErr> 
                 .not_null(),
         )
         .col(ColumnDef::new(json_struct::Column::JsonValueOpt).json())
+        .col(
+            ColumnDef::new(json_struct::Column::JsonObjects)
+                .json()
+                .not_null(),
+        )
+        .col(ColumnDef::new(json_struct::Column::JsonObject).json())
+        .col(ColumnDef::new(json_struct::Column::JsonObjectNonStringlyKey).json())
         .col(ColumnDef::new(json_struct::Column::JsonNonSerializable).json())
         .to_owned();
 

@@ -14,6 +14,9 @@ mod with_time;
 #[cfg(feature = "with-time")]
 pub use with_time::*;
 
+#[cfg(feature = "with-json")]
+mod with_json;
+
 #[cfg(feature = "with-uuid")]
 mod text_uuid;
 #[cfg(feature = "with-uuid")]
