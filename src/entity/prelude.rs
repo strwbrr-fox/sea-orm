@@ -6,7 +6,7 @@ pub use crate::{
     Related, RelatedSelfVia, RelationDef, RelationTrait, Select, SelectExt, Value,
     error::*,
     sea_query::{DynIden, Expr, RcOrArc, SeaRc, StringLen},
-    value::{Url, UrlPosition},
+    value::TextUrl,
 };
 
 #[cfg(feature = "macros")]

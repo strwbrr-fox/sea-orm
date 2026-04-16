@@ -15,14 +15,14 @@ mod sample {
     pub struct Model {
         #[sea_orm(primary_key)]
         pub id: i64,
-        pub location: Url,
+        pub location: TextUrl,
     }
 
     impl ActiveModelBehavior for ActiveModel {}
 }
 
 #[sea_orm_macros::test]
-async fn text_uuid_test() -> Result<(), DbErr> {
+async fn text_url_test() -> Result<(), DbErr> {
     let ctx = TestContext::new("url_test").await;
     let db = &ctx.db;
 
